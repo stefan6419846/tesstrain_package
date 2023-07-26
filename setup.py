@@ -10,7 +10,7 @@ setuptools.setup(
     description='Training utils for Tesseract',
     long_description=(ROOT_DIRECTORY / 'README.md').read_text(encoding='utf-8'),
     long_description_content_type='text/markdown',
-    url='https://github.com/tesseract-ocr/tesstrain',
+    url='https://github.com/stefan6419846/tesstrain_package',
     packages=setuptools.find_packages(),
     license='Apache Software License 2.0',
     author='Tesseract contributors',
@@ -21,6 +21,7 @@ setuptools.setup(
         'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3 :: Only',
+        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
@@ -29,7 +30,7 @@ setuptools.setup(
     ],
     keywords='Tesseract,tesseract-ocr,OCR,optical character recognition',
 
-    python_requires='>=3.7',
+    python_requires='>=3.6',
     install_requires=[
         'tqdm',
     ],
