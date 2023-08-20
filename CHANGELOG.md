@@ -1,5 +1,8 @@
 # Development version
 
+* Add type hints.
+* Mark package as typed.
+
 # Version 0.1.1 - 2023-07-26
 
 * Add `--vertical_fontlist` option.
