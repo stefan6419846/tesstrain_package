@@ -16,11 +16,14 @@ Set some language specific variables.
 
 import logging
 import os
+from typing import List, Optional
+
+from tesstrain.arguments import TrainingArguments
 
 log = logging.getLogger(__name__)
 
 # Array of all valid language codes.
-VALID_LANGUAGE_CODES = (
+VALID_LANGUAGE_CODES: str = (
     "afr amh ara asm aze aze_cyrl bel ben bih bod bos bul cat "
     "ceb ces chi_sim chi_tra chr cym cyr_lid dan deu div dzo "
     "ell eng enm epo est eus fas fil fin fra frk frm gle glg "
@@ -33,9 +36,9 @@ VALID_LANGUAGE_CODES = (
 )
 
 # Codes for which we have webtext but no fonts:
-UNUSABLE_LANGUAGE_CODES = ""
+UNUSABLE_LANGUAGE_CODES: str = ""
 
-FRAKTUR_FONTS = [
+FRAKTUR_FONTS: List[str] = [
     "CaslonishFraxx Medium",
     "Cloister Black, Light",
     "Proclamate Light",
@@ -44,7 +47,7 @@ FRAKTUR_FONTS = [
 ]
 
 # List of fonts to train on
-LATIN_FONTS = [
+LATIN_FONTS: List[str] = [
     "Arial Bold",
     "Arial Bold Italic",
     "Arial Italic",
@@ -80,7 +83,7 @@ LATIN_FONTS = [
 ]
 
 # List of fonts for printed/neo-Latin ('lat' language code, different from Latin script)
-NEOLATIN_FONTS = [
+NEOLATIN_FONTS: List[str] = [
     "GFS Bodoni",
     "GFS Bodoni Bold",
     "GFS Bodoni Italic",
@@ -112,7 +115,7 @@ NEOLATIN_FONTS = [
     "IM FELL Great Primer PRO Italic",
 ]
 
-IRISH_UNCIAL_FONTS = [
+IRISH_UNCIAL_FONTS: List[str] = [
     "Bunchlo Arsa Dubh GC",
     "Bunchlo Arsa GC",
     "Bunchlo Arsa GC Bold",
@@ -138,7 +141,7 @@ IRISH_UNCIAL_FONTS = [
     "Urchlo GC Bold",
 ]
 
-EARLY_LATIN_FONTS = [
+EARLY_LATIN_FONTS: List[str] = [
     *FRAKTUR_FONTS,
     *LATIN_FONTS,
     # The Wyld font family renders early modern ligatures encoded in the private
@@ -149,7 +152,7 @@ EARLY_LATIN_FONTS = [
     "GentiumAlt",
 ]
 
-VIETNAMESE_FONTS = [
+VIETNAMESE_FONTS: List[str] = [
     "Arial Unicode MS Bold",
     "Arial Bold Italic",
     "Arial Italic",
@@ -184,7 +187,7 @@ VIETNAMESE_FONTS = [
     "VL PGothic",
 ]
 
-DEVANAGARI_FONTS = [
+DEVANAGARI_FONTS: List[str] = [
     "FreeSans",
     "Chandas",
     "Kalimati",
@@ -206,7 +209,7 @@ DEVANAGARI_FONTS = [
     "Santipur OT Medium",
 ]
 
-KANNADA_FONTS = [
+KANNADA_FONTS: List[str] = [
     "Kedage Bold",
     "Kedage Italic",
     "Kedage",
@@ -226,7 +229,7 @@ KANNADA_FONTS = [
     "Tunga Bold",
 ]
 
-TELUGU_FONTS = [
+TELUGU_FONTS: List[str] = [
     "Pothana2000",
     "Vemana2000",
     "Lohit Telugu",
@@ -254,7 +257,7 @@ TELUGU_FONTS = [
     "Gautami",
 ]
 
-TAMIL_FONTS = [
+TAMIL_FONTS: List[str] = [
     "TAMu_Kadambri",
     "TAMu_Kalyani",
     "TAMu_Maduram",
@@ -280,7 +283,7 @@ TAMIL_FONTS = [
     "Lohit Tamil Classical",
 ]
 
-THAI_FONTS = [
+THAI_FONTS: List[str] = [
     "FreeSerif",
     "FreeSerif Italic",
     "Garuda",
@@ -313,7 +316,7 @@ THAI_FONTS = [
     "Tahoma",
 ]
 
-KOREAN_FONTS = [
+KOREAN_FONTS: List[str] = [
     "Arial Unicode MS",
     "Arial Unicode MS Bold",
     "Baekmuk Batang Patched",
@@ -323,7 +326,7 @@ KOREAN_FONTS = [
     "Baekmuk Headline",
 ]
 
-CHI_SIM_FONTS = [
+CHI_SIM_FONTS: List[str] = [
     "AR PL UKai CN",
     "AR PL UMing Patched Light",
     "Arial Unicode MS",
@@ -331,7 +334,7 @@ CHI_SIM_FONTS = [
     "WenQuanYi Zen Hei Medium",
 ]
 
-CHI_TRA_FONTS = [
+CHI_TRA_FONTS: List[str] = [
     "AR PL UKai TW",
     "AR PL UMing TW MBE Light",
     "AR PL UKai Patched",
@@ -341,7 +344,7 @@ CHI_TRA_FONTS = [
     "WenQuanYi Zen Hei Medium",
 ]
 
-JPN_FONTS = [
+JPN_FONTS: List[str] = [
     "TakaoExGothic",
     "TakaoExMincho",
     "TakaoGothic",
@@ -354,7 +357,7 @@ JPN_FONTS = [
     "Noto Sans Japanese Light",
 ]
 
-RUSSIAN_FONTS = [
+RUSSIAN_FONTS: List[str] = [
     "Arial Bold",
     "Arial Bold Italic",
     "Arial Italic",
@@ -389,7 +392,7 @@ RUSSIAN_FONTS = [
     "DejaVu Sans Ultra-Light",
 ]
 
-GREEK_FONTS = [
+GREEK_FONTS: List[str] = [
     "Arial Unicode MS",
     "Arial Unicode MS Bold",
     "DejaVu Sans Mono",
@@ -422,7 +425,7 @@ GREEK_FONTS = [
     "VL PGothic",
 ]
 
-ANCIENT_GREEK_FONTS = [
+ANCIENT_GREEK_FONTS: List[str] = [
     "GFS Artemisia",
     "GFS Artemisia Bold",
     "GFS Artemisia Bold Italic",
@@ -446,7 +449,7 @@ ANCIENT_GREEK_FONTS = [
     "GFS Solomos",
 ]
 
-ARABIC_FONTS = [
+ARABIC_FONTS: List[str] = [
     "Arabic Transparent Bold",
     "Arabic Transparent",
     "Arab",
@@ -481,7 +484,7 @@ ARABIC_FONTS = [
     "Traditional Arabic",
 ]
 
-HEBREW_FONTS = [
+HEBREW_FONTS: List[str] = [
     "Arial Bold",
     "Arial Bold Italic",
     "Arial Italic",
@@ -510,7 +513,7 @@ HEBREW_FONTS = [
     "Tahoma",
 ]
 
-BENGALI_FONTS = [
+BENGALI_FONTS: List[str] = [
     "Bangla Medium",
     "Lohit Bengali",
     "Mukti Narrow",
@@ -531,7 +534,7 @@ BENGALI_FONTS = [
     "Mitra Mono",
 ]
 
-KYRGYZ_FONTS = [
+KYRGYZ_FONTS: List[str] = [
     "Arial",
     "Arial Bold",
     "Arial Italic",
@@ -553,7 +556,7 @@ KYRGYZ_FONTS = [
     "FreeSerif Bold Italic",
 ]
 
-PERSIAN_FONTS = [
+PERSIAN_FONTS: List[str] = [
     "Amiri Bold Italic",
     "Amiri Bold",
     "Amiri Italic",
@@ -579,7 +582,7 @@ PERSIAN_FONTS = [
     "Yakout Linotype",
 ]
 
-AMHARIC_FONTS = [
+AMHARIC_FONTS: List[str] = [
     "Abyssinica SIL",
     "Droid Sans Ethiopic Bold",
     "Droid Sans Ethiopic",
@@ -588,7 +591,7 @@ AMHARIC_FONTS = [
     "Noto Sans Ethiopic",
 ]
 
-ARMENIAN_FONTS = [
+ARMENIAN_FONTS: List[str] = [
     "Arial Unicode MS",
     "Arial Unicode MS Bold",
     "Ascender Uni",
@@ -599,7 +602,7 @@ ARMENIAN_FONTS = [
     "FreeSans Oblique",
 ]
 
-BURMESE_FONTS = [
+BURMESE_FONTS: List[str] = [
     "Myanmar Sans Pro",
     "Noto Sans Myanmar Bold",
     "Noto Sans Myanmar",
@@ -608,9 +611,9 @@ BURMESE_FONTS = [
     "TharLon",
 ]
 
-JAVANESE_FONTS = ["Prada"]
+JAVANESE_FONTS: List[str] = ["Prada"]
 
-NORTH_AMERICAN_ABORIGINAL_FONTS = [
+NORTH_AMERICAN_ABORIGINAL_FONTS: List[str] = [
     "Aboriginal Sans",
     "Aboriginal Sans Bold Italic",
     "Aboriginal Sans Italic",
@@ -621,7 +624,7 @@ NORTH_AMERICAN_ABORIGINAL_FONTS = [
     "Aboriginal Serif",
 ]
 
-GEORGIAN_FONTS = [
+GEORGIAN_FONTS: List[str] = [
     "Arial Unicode MS Bold",
     "Arial Unicode MS",
     "BPG Algeti GPL\&GNU",
@@ -656,7 +659,7 @@ GEORGIAN_FONTS = [
     "FreeSerif Italic",
 ]
 
-OLD_GEORGIAN_FONTS = [
+OLD_GEORGIAN_FONTS: List[str] = [
     "Arial Unicode MS Bold",
     "Arial Unicode MS",
     "BPG Algeti GPL\&GNU",
@@ -686,7 +689,7 @@ OLD_GEORGIAN_FONTS = [
     "FreeSerif Italic",
 ]
 
-KHMER_FONTS = [
+KHMER_FONTS: List[str] = [
     "Khmer OS",
     "Khmer OS System",
     "Khmer OS Battambang",
@@ -705,7 +708,7 @@ KHMER_FONTS = [
     "Noto Serif Khmer Light",
 ]
 
-KURDISH_FONTS = [
+KURDISH_FONTS: List[str] = [
     "Amiri Bold Italic",
     "Amiri Bold",
     "Amiri Italic",
@@ -731,7 +734,7 @@ KURDISH_FONTS = [
     "Yakout Linotype",
 ]
 
-LAOTHIAN_FONTS = [
+LAOTHIAN_FONTS: List[str] = [
     "Phetsarath OT",
     "Arial Unicode MS",
     "Arial Unicode MS Bold",
@@ -752,7 +755,7 @@ LAOTHIAN_FONTS = [
     "Souliyo Unicode",
 ]
 
-GUJARATI_FONTS = [
+GUJARATI_FONTS: List[str] = [
     "Lohit Gujarati",
     "Rekha Medium",
     "Samyak Gujarati Medium",
@@ -769,7 +772,7 @@ GUJARATI_FONTS = [
     "Shruti Bold",
 ]
 
-MALAYALAM_FONTS = [
+MALAYALAM_FONTS: List[str] = [
     "AnjaliOldLipi",
     "Arial Unicode MS",
     "Arial Unicode MS Bold",
@@ -789,7 +792,7 @@ MALAYALAM_FONTS = [
     "suruma",
 ]
 
-ORIYA_FONTS = [
+ORIYA_FONTS: List[str] = [
     "Arial Unicode MS",
     "Arial Unicode MS Bold",
     "Ascender Uni",
@@ -798,7 +801,7 @@ ORIYA_FONTS = [
     "Lohit Oriya",
 ]
 
-PUNJABI_FONTS = [
+PUNJABI_FONTS: List[str] = [
     "Arial Unicode MS",
     "Arial Unicode MS Bold",
     "Ascender Uni",
@@ -811,7 +814,7 @@ PUNJABI_FONTS = [
     "FreeSerif",
 ]
 
-SINHALA_FONTS = [
+SINHALA_FONTS: List[str] = [
     "Noto Sans Sinhala Bold",
     "Noto Sans Sinhala",
     "OCRUnicode",
@@ -820,7 +823,7 @@ SINHALA_FONTS = [
     "FreeSerif",
 ]
 
-SYRIAC_FONTS = [
+SYRIAC_FONTS: List[str] = [
     "East Syriac Adiabene",
     "East Syriac Ctesiphon",
     "Estrangelo Antioch",
@@ -844,9 +847,9 @@ SYRIAC_FONTS = [
     "FreeSans",
 ]
 
-THAANA_FONTS = ["FreeSerif"]
+THAANA_FONTS: List[str] = ["FreeSerif"]
 
-TIBETAN_FONTS = [
+TIBETAN_FONTS: List[str] = [
     "Arial Unicode MS",
     "Arial Unicode MS Bold",
     "Ascender Uni",
@@ -860,7 +863,7 @@ TIBETAN_FONTS = [
 ]
 
 # The following fonts will be rendered vertically in phase I.
-VERTICAL_FONTS = [
+VERTICAL_FONTS: List[str] = [
     "TakaoExGothic",
     "TakaoExMincho",
     "AR PL UKai Patched",
@@ -868,7 +871,7 @@ VERTICAL_FONTS = [
     "Baekmuk Batang Patched",
 ]
 
-FLAGS_webtext_prefix = os.environ.get("FLAGS_webtext_prefix", "")
+FLAGS_webtext_prefix: str = os.environ.get("FLAGS_webtext_prefix", "")
 
 
 # Set language-specific values for several global variables, including
@@ -886,35 +889,35 @@ FLAGS_webtext_prefix = os.environ.get("FLAGS_webtext_prefix", "")
 #      specify fixed length dawg generation for non-space-delimited lang
 # TODO(dsl): We can refactor these into functions that assign FONTS,
 # TEXT_CORPUS, etc. separately.
-def set_lang_specific_parameters(ctx, lang):
+def set_lang_specific_parameters(ctx: TrainingArguments, lang: str) -> TrainingArguments:
     # The default text location is now given directly from the language code.
-    TEXT_CORPUS = f"{FLAGS_webtext_prefix}/{lang}.corpus.txt"
-    FILTER_ARGUMENTS = []
-    WORDLIST2DAWG_ARGUMENTS = ""
+    TEXT_CORPUS: str = f"{FLAGS_webtext_prefix}/{lang}.corpus.txt"
+    FILTER_ARGUMENTS: List[str] = []
+    WORDLIST2DAWG_ARGUMENTS: str = ""
     # These dawg factors represent the fraction of the corpus not covered by the
     # dawg, and seem like reasonable defaults, but the optimal value is likely
     # to be highly corpus-dependent, as well as somewhat language-dependent.
     # Number dawg factor is the fraction of all numeric strings that are not
     # covered, which is why it is higher relative to the others.
-    PUNC_DAWG_FACTOR = None
-    NUMBER_DAWG_FACTOR = 0.125
-    WORD_DAWG_FACTOR = 0.05
-    BIGRAM_DAWG_FACTOR = 0.015
-    TRAINING_DATA_ARGUMENTS = []
-    FRAGMENTS_DISABLED = "y"
-    RUN_SHAPE_CLUSTERING = False
-    AMBIGS_FILTER_DENOMINATOR = "100000"
-    LEADING = 32
-    MEAN_COUNT = 40  # Default for latin script.
+    PUNC_DAWG_FACTOR: Optional[float] = None
+    NUMBER_DAWG_FACTOR: float = 0.125
+    WORD_DAWG_FACTOR: float = 0.05
+    BIGRAM_DAWG_FACTOR: float = 0.015
+    TRAINING_DATA_ARGUMENTS: List[str] = []
+    FRAGMENTS_DISABLED: str = "y"
+    RUN_SHAPE_CLUSTERING: bool = False
+    AMBIGS_FILTER_DENOMINATOR: str = "100000"
+    LEADING: int = 32
+    MEAN_COUNT: int = 40  # Default for latin script.
     # Language to mix with the language for maximum accuracy. Defaults to eng.
     # If no language is good, set to the base language.
-    MIX_LANG = "eng"
-    FONTS = ctx.fonts
-    TEXT2IMAGE_EXTRA_ARGS = []
-    EXPOSURES = []
+    MIX_LANG: str = "eng"
+    FONTS: List[str] = ctx.fonts
+    TEXT2IMAGE_EXTRA_ARGS: List[str] = []
+    EXPOSURES: List[int] = []
 
-    GENERATE_WORD_BIGRAMS = None
-    WORD_DAWG_SIZE = None
+    GENERATE_WORD_BIGRAMS: Optional[int] = None
+    WORD_DAWG_SIZE: Optional[int] = None
 
     # Latin languages.
     if lang == "enm":
@@ -941,7 +944,7 @@ def set_lang_specific_parameters(ctx, lang):
             FONTS = EARLY_LATIN_FONTS
     elif lang == "lat":
         if not EXPOSURES:
-            EXPOSURES = "-3 -2 -1 0 1 2 3".split()
+            EXPOSURES = [-3, -2, -1, 0, 1, 2, 3]
         if not FONTS:
             FONTS = NEOLATIN_FONTS
     elif lang == "spa_old":
@@ -1278,7 +1281,7 @@ def set_lang_specific_parameters(ctx, lang):
             FONTS = GREEK_FONTS
     elif lang == "grc":
         if not EXPOSURES:
-            EXPOSURES = "-3 -2 -1 0 1 2 3".split()
+            EXPOSURES = [-3, -2, -1, 0, 1, 2, 3]
         if not FONTS:
             FONTS = ANCIENT_GREEK_FONTS
     elif lang == "hye":
