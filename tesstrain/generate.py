@@ -373,4 +373,5 @@ def make_lstmdata(ctx: TrainingArguments):
 
     lstm_list = f"{ctx.output_dir}/{ctx.lang_code}.training_files.txt"
     dir_listing = (str(p) for p in path_output.glob(f"{ctx.lang_code}.*.lstmf"))
-    pathlib.Path(lstm_list).write_text("\n".join(dir_listing), encoding="utf-8", newline="\n")
+    with open(lstm_list, encoding="utf-8", newline="\n") as fd:
+        fd.write("\n".join(dir_listing))
