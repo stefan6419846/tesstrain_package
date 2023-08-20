@@ -26,6 +26,6 @@ jobs:
       # - name: test
       #   run: 
       #     python -m unittest discover --verbose --start-directory tests/
-      # - name: mypy
-      #   run:
-      #     mypy tesstrain/
+      - name: mypy
+        run:
+          mypy tesstrain/
