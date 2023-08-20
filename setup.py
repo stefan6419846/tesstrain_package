@@ -12,6 +12,7 @@ setuptools.setup(
     long_description_content_type='text/markdown',
     url='https://github.com/stefan6419846/tesstrain_package',
     packages=setuptools.find_packages(),
+    include_package_data=True,
     license='Apache Software License 2.0',
     author='Tesseract contributors',
     classifiers=[
@@ -27,6 +28,7 @@ setuptools.setup(
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
+        'Typing :: Typed',
     ],
     keywords='Tesseract,tesseract-ocr,OCR,optical character recognition',
 
@@ -34,6 +36,12 @@ setuptools.setup(
     install_requires=[
         'tqdm',
     ],
+    extras_require={
+        'dev': [
+            'mypy',
+            'types-tqdm',
+        ]
+    },
 
     entry_points={
         'console_scripts': [

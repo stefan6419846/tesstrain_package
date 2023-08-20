@@ -22,6 +22,7 @@ import pathlib
 import platform
 from datetime import date
 from tempfile import TemporaryDirectory, mkdtemp
+from typing import Any
 
 from tesstrain.generate import err_exit
 
@@ -31,25 +32,25 @@ log = logging.getLogger(__name__)
 class TrainingArguments(argparse.Namespace):
     def __init__(self):
         super(TrainingArguments, self).__init__()
-        self.uname = platform.uname().system.lower()
-        self.lang_code = "eng"
-        self.timestamp = str(date.today())
+        self.uname: str = platform.uname().system.lower()
+        self.lang_code: str = "eng"
+        self.timestamp: str = str(date.today())
 
-        self._font_config_cache = TemporaryDirectory(prefix="font_tmp")
-        self.font_config_cache = self._font_config_cache.name
-        self.fonts_dir = (
+        self._font_config_cache: TemporaryDirectory = TemporaryDirectory(prefix="font_tmp")
+        self.font_config_cache: str = self._font_config_cache.name
+        self.fonts_dir: str = (
             "/Library/Fonts/" if "darwin" in self.uname else "/usr/share/fonts/"
         )
 
-        self.max_pages = 0
-        self.save_box_tiff = False
-        self.overwrite = False
-        self.linedata = False
-        self.run_shape_clustering = False
-        self.extract_font_properties = True
-        self.distort_image = False
+        self.max_pages: int = 0
+        self.save_box_tiff: bool = False
+        self.overwrite: bool = False
+        self.linedata: bool = False
+        self.run_shape_clustering: bool = False
+        self.extract_font_properties: bool = True
+        self.distort_image: bool = False
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         return (
             argparse.Namespace.__eq__(self, other) and
             self.uname == other.uname and
@@ -67,7 +68,7 @@ class TrainingArguments(argparse.Namespace):
         )
 
 
-def get_argument_parser():
+def get_argument_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog='tesstrain',
         epilog="""
@@ -175,7 +176,7 @@ def get_argument_parser():
     return parser
 
 
-def verify_parameters_and_handle_defaults(ctx):
+def verify_parameters_and_handle_defaults(ctx: TrainingArguments) -> TrainingArguments:
     log.debug(ctx)
 
     if not ctx.lang_code:

@@ -15,6 +15,7 @@
 # https://tesseract-ocr.github.io/tessdoc/Training-Tesseract.html.
 
 import logging
+from typing import List, Optional
 
 from tesstrain.arguments import (
     get_argument_parser,
@@ -39,18 +40,18 @@ def setup_logging_console():
     log.addHandler(console)
 
 
-def setup_logging_logfile(logfile):
-    logfile = logging.FileHandler(logfile, encoding='utf-8')
-    logfile.setLevel(logging.DEBUG)
+def setup_logging_logfile(logfile: str) -> logging.FileHandler:
+    logfile_handler = logging.FileHandler(logfile, encoding='utf-8')
+    logfile_handler.setLevel(logging.DEBUG)
     logfile_formatter = logging.Formatter(
         "[%(asctime)s] - %(levelname)s - %(name)s - %(message)s"
     )
-    logfile.setFormatter(logfile_formatter)
-    log.addHandler(logfile)
-    return logfile
+    logfile_handler.setFormatter(logfile_formatter)
+    log.addHandler(logfile_handler)
+    return logfile_handler
 
 
-def parse_flags(argv=None):
+def parse_flags(argv: Optional[List[str]] = None) -> TrainingArguments:
     ctx = TrainingArguments()
     log.debug(ctx)
     parser = get_argument_parser()
@@ -58,7 +59,7 @@ def parse_flags(argv=None):
     return verify_parameters_and_handle_defaults(ctx)
 
 
-def main():
+def main() -> int:
     setup_logging_console()
     ctx = parse_flags()
     logfile = setup_logging_logfile(ctx.log_file)

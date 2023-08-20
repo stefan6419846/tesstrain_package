@@ -35,7 +35,7 @@ from tesstrain import language_specific
 log = logging.getLogger()
 
 
-def run_from_context(ctx):
+def run_from_context(ctx: TrainingArguments):
     if not ctx.linedata:
         log.error("--linedata_only is required since only LSTM is supported")
         sys.exit(1)
@@ -70,7 +70,7 @@ def run(
         tessdata_directory: Optional[str] = None,
         exposures: Optional[List[int]] = None,
         point_size: int = 12
-):
+) -> int:
     """
     :param fonts: A list of font names to train on. These need to be recognizable by
                   Pango using fontconfig. An easy way to list the canonical name of all
