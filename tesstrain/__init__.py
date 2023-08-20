@@ -12,4 +12,4 @@
 
 from tesstrain.wrapper import run
 
-__version__ = '0.1.1'
+__version__: str = '0.1.1'
