@@ -14,11 +14,14 @@
 Set some language specific variables.
 """
 
+from __future__ import annotations
+
 import logging
 import os
-from typing import List, Optional
+from typing import List, Optional, TYPE_CHECKING
 
-from tesstrain.arguments import TrainingArguments
+if TYPE_CHECKING:
+    from tesstrain.arguments import TrainingArguments
 
 log = logging.getLogger(__name__)
 

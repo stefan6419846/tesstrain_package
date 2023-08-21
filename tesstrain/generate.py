@@ -17,6 +17,8 @@ For a detailed description of the phases, see
 https://tesseract-ocr.github.io/tessdoc/Training-Tesseract.html.
 """
 
+from __future__ import annotations
+
 import concurrent.futures
 import logging
 import os
@@ -25,11 +27,12 @@ import shutil
 import subprocess
 import sys
 from operator import itemgetter
-from typing import cast, Any, Dict, Generator, List, NoReturn, Optional
+from typing import cast, Any, Dict, Generator, List, NoReturn, Optional, TYPE_CHECKING
 
 from tqdm import tqdm
 
-from tesstrain.arguments import TrainingArguments
+if TYPE_CHECKING:
+    from tesstrain.arguments import TrainingArguments
 from tesstrain.language_specific import VERTICAL_FONTS
 
 log = logging.getLogger(__name__)
