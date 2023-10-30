@@ -29,7 +29,7 @@ from tesstrain.wrapper import run_from_context
 log = logging.getLogger()
 
 
-def setup_logging_console():
+def setup_logging_console() -> None:
     log.setLevel(logging.DEBUG)
     console = logging.StreamHandler()
     console.setLevel(logging.INFO)

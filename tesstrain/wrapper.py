@@ -35,7 +35,7 @@ from tesstrain import language_specific
 log = logging.getLogger()
 
 
-def run_from_context(ctx: TrainingArguments):
+def run_from_context(ctx: TrainingArguments) -> None:
     if not ctx.linedata:
         log.error("--linedata_only is required since only LSTM is supported")
         sys.exit(1)

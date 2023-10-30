@@ -27,7 +27,7 @@ import shutil
 import subprocess
 import sys
 from operator import itemgetter
-from typing import cast, Any, Dict, Generator, List, NoReturn, Optional, TYPE_CHECKING
+from typing import cast, Any, Dict, Generator, List, NoReturn, Optional, TYPE_CHECKING, Union
 
 from tqdm import tqdm
 
@@ -43,7 +43,7 @@ def err_exit(msg: str) -> NoReturn:
     sys.exit(1)
 
 
-def run_command(cmd: str, *args, env: Optional[Dict[str, Any]] = None):
+def run_command(cmd: str, *args: Union[str, pathlib.Path], env: Optional[Dict[str, Any]] = None) -> None:
     """
     Helper function to run a command and append its output to a log. Aborts early if
     the program file is not found.
@@ -79,7 +79,7 @@ def run_command(cmd: str, *args, env: Optional[Dict[str, Any]] = None):
         err_exit(f"Program {cmd} failed with return code {proc.returncode}. Abort.")
 
 
-def check_file_readable(*filenames) -> bool:
+def check_file_readable(*filenames: Union[str, pathlib.Path]) -> bool:
     """
     Check if all the given files exist, or exit otherwise.
 
@@ -100,13 +100,13 @@ def check_file_readable(*filenames) -> bool:
     return True
 
 
-def cleanup(ctx: TrainingArguments):
+def cleanup(ctx: TrainingArguments) -> None:
     if os.path.exists(ctx.log_file):
         shutil.copy(ctx.log_file, ctx.output_dir)
     shutil.rmtree(ctx.training_dir)
 
 
-def initialize_fontconfig(ctx: TrainingArguments):
+def initialize_fontconfig(ctx: TrainingArguments) -> None:
     """
     Initialize the font configuration with a unique font cache directory.
     """
@@ -191,7 +191,7 @@ def generate_font_image(
     return f"{font}-{exposure}"
 
 
-def phase_I_generate_image(ctx: TrainingArguments, par_factor: Optional[int] = None):
+def phase_I_generate_image(ctx: TrainingArguments, par_factor: Optional[int] = None) -> None:
     """
     Phase I: Generate (I)mages from training text for each font.
     """
@@ -244,7 +244,7 @@ def phase_I_generate_image(ctx: TrainingArguments, par_factor: Optional[int] = N
             check_file_readable(str(outbase) + ".box", str(outbase) + ".tif")
 
 
-def phase_UP_generate_unicharset(ctx: TrainingArguments):
+def phase_UP_generate_unicharset(ctx: TrainingArguments) -> None:
     """
     Phase UP: Generate (U)nicharset and (P)roperties file.
     """
@@ -278,7 +278,7 @@ def phase_UP_generate_unicharset(ctx: TrainingArguments):
     check_file_readable(ctx.xheights_file)
 
 
-def phase_E_extract_features(ctx: TrainingArguments, box_config: List[str], ext: str):
+def phase_E_extract_features(ctx: TrainingArguments, box_config: List[str], ext: str) -> None:
     """
     Phase E: (E)xtract .tr feature files from .tif/.box files.
     """
@@ -327,7 +327,7 @@ def phase_E_extract_features(ctx: TrainingArguments, box_config: List[str], ext:
         check_file_readable(pathlib.Path(img_file.with_suffix("." + ext)))
 
 
-def make_lstmdata(ctx: TrainingArguments):
+def make_lstmdata(ctx: TrainingArguments) -> None:
     log.info("=== Constructing LSTM training data ===")
     lang_prefix = f"{ctx.langdata_dir}/{ctx.lang_code}/{ctx.lang_code}"
     path_output = pathlib.Path(ctx.output_dir)

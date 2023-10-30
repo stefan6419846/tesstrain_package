@@ -28,4 +28,4 @@ jobs:
       #     python -m unittest discover --verbose --start-directory tests/
       - name: mypy
         run:
-          mypy --check-untyped-defs tesstrain/
+          mypy --strict tesstrain/

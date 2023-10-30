@@ -30,13 +30,13 @@ log = logging.getLogger(__name__)
 
 
 class TrainingArguments(argparse.Namespace):
-    def __init__(self):
+    def __init__(self) -> None:
         super(TrainingArguments, self).__init__()
         self.uname: str = platform.uname().system.lower()
         self.lang_code: str = "eng"
         self.timestamp: str = str(date.today())
 
-        self._font_config_cache: TemporaryDirectory = TemporaryDirectory(prefix="font_tmp")
+        self._font_config_cache: TemporaryDirectory = TemporaryDirectory(prefix="font_tmp")  # type: ignore[type-arg]
         self.font_config_cache: str = self._font_config_cache.name
         self.fonts_dir: str = (
             "/Library/Fonts/" if "darwin" in self.uname else "/usr/share/fonts/"
@@ -205,7 +205,7 @@ def verify_parameters_and_handle_defaults(ctx: TrainingArguments) -> TrainingArg
     ctx.log_file = pathlib.Path(ctx.training_dir) / "tesstrain.log"
     log.info(f"Log file location: {ctx.log_file}")
 
-    def show_tmpdir_location(training_dir):
+    def show_tmpdir_location(training_dir: str) -> None:
         # On successful exit we will delete this first; on failure we want to let the user
         # know where the log is
         if pathlib.Path(training_dir).exists():
