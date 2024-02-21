@@ -212,12 +212,12 @@ def phase_I_generate_image(ctx: TrainingArguments, par_factor: Optional[int] = N
             p = 0.99
             ngram_frac = p * sum(int(rec[1]) for rec in records if len(rec) >= 2)
 
-            with pathlib.Path(ctx.train_ngrams_file).open("w", encoding="utf-8") as f:
+            with open(ctx.train_ngrams_file, mode="w", encoding="utf-8") as fd:
                 cumsum = 0
                 for bigram, count in sorted(records, key=itemgetter(1), reverse=True):
                     if cumsum > ngram_frac:
                         break
-                    f.write(bigram + " ")
+                    fd.write(bigram + " ")
                     cumsum += int(count)
 
             check_file_readable(ctx.train_ngrams_file)
@@ -376,5 +376,5 @@ def make_lstmdata(ctx: TrainingArguments) -> None:
 
     lstm_list = f"{ctx.output_dir}/{ctx.lang_code}.training_files.txt"
     dir_listing = (str(p) for p in path_output.glob(f"{ctx.lang_code}.*.lstmf"))
-    with open(lstm_list, encoding="utf-8", newline="\n") as fd:
+    with open(lstm_list, mode="w", encoding="utf-8", newline="\n") as fd:
         fd.write("\n".join(dir_listing))
