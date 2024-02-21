@@ -1,5 +1,9 @@
 # Development version
 
+# Version 0.1.3 - 2024-02-22
+
+* Fix file mode in `make_lstmdata`.
+
 # Version 0.1.2 - 2023-08-21
 
 * Add type hints.
