@@ -16,6 +16,7 @@ Set some language specific variables.
 
 from __future__ import annotations
 
+import itertools
 import logging
 import os
 from typing import List, Optional, TYPE_CHECKING
@@ -917,7 +918,7 @@ def set_lang_specific_parameters(ctx: TrainingArguments, lang: str) -> TrainingA
     MIX_LANG: str = "eng"
     FONTS: List[str] = ctx.fonts
     TEXT2IMAGE_EXTRA_ARGS: List[str] = []
-    EXPOSURES: List[int] = []
+    EXPOSURES: List[int] = list(map(int, itertools.chain(*ctx.exposures or [])))
 
     GENERATE_WORD_BIGRAMS: Optional[int] = None
     WORD_DAWG_SIZE: Optional[int] = None
