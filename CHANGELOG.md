@@ -1,5 +1,7 @@
 # Development version
 
+# Version 0.1.4 - 2024-02-22
+
 * Fix handling of user-specified exposure parameters.
 
 # Version 0.1.3 - 2024-02-22
