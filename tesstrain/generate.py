@@ -288,10 +288,10 @@ def phase_E_extract_features(ctx: TrainingArguments, box_config: List[str], ext:
     log.debug(img_files)
 
     # Use any available language-specific configs.
-    config = ""
+    config: List[str] = []
     testconfig = pathlib.Path(ctx.langdata_dir) / ctx.lang_code / f"{ctx.lang_code}.config"
     if testconfig.exists():
-        config = str(testconfig)
+        config = [str(testconfig)]
         log.info(f"Using {ctx.lang_code}.config")
 
     tessdata_environ = os.environ.copy()
@@ -310,7 +310,7 @@ def phase_E_extract_features(ctx: TrainingArguments, box_config: List[str], ext:
                 img_file,
                 pathlib.Path(img_file).with_suffix(""),
                 *box_config,
-                config,
+                *config,
                 env=tessdata_environ,
             )
             futures.append(future)
