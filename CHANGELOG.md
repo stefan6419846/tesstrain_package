@@ -1,5 +1,8 @@
 # Development version
 
+* Migrate from `setup.py` to `pyproject.toml`.
+* Add Read the Docs configuration.
+
 # Version 0.1.4 - 2024-02-22
 
 * Fix handling of user-specified exposure parameters.
