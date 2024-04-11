@@ -30,6 +30,10 @@ log = logging.getLogger(__name__)
 
 
 class TrainingArguments(argparse.Namespace):
+    """
+    Container for holding the training arguments.
+    """
+
     def __init__(self) -> None:
         super(TrainingArguments, self).__init__()
         self.uname: str = platform.uname().system.lower()
@@ -69,6 +73,11 @@ class TrainingArguments(argparse.Namespace):
 
 
 def get_argument_parser() -> argparse.ArgumentParser:
+    """
+    Get the ArgumentParser for the CLI.
+
+    :return: The corresponding argument parser.
+    """
     parser = argparse.ArgumentParser(
         prog='tesstrain',
         epilog="""
@@ -177,6 +186,12 @@ def get_argument_parser() -> argparse.ArgumentParser:
 
 
 def verify_parameters_and_handle_defaults(ctx: TrainingArguments) -> TrainingArguments:
+    """
+    Verify the given parameters and handle defaults if value is unset.
+
+    :param ctx: The parameters to handle.
+    :return: The  parameters.
+    """
     log.debug(ctx)
 
     if not ctx.lang_code:

@@ -36,6 +36,11 @@ log = logging.getLogger()
 
 
 def run_from_context(ctx: TrainingArguments) -> None:
+    """
+    Run with the given configuration.
+
+    :param ctx: The configuration to run with.
+    """
     if not ctx.linedata:
         log.error("--linedata_only is required since only LSTM is supported")
         sys.exit(1)
@@ -72,10 +77,12 @@ def run(
         point_size: int = 12
 ) -> int:
     """
+    Run with the given parameters.
+
     :param fonts: A list of font names to train on. These need to be recognizable by
                   Pango using fontconfig. An easy way to list the canonical name of all
                   fonts available on your system is to run text2image with
-                  `--list_available_fonts` and the appropriate `--fonts_dir` path.
+                  ``--list_available_fonts`` and the appropriate ``--fonts_dir`` path.
     :param fonts_directory: Path to font files.
     :param temporary_directory: Path to temporary training directory.
     :param language_code: ISO 639 language code. Defaults to English.
@@ -93,16 +100,17 @@ def run(
                           the langdata directory.
     :param extract_font_properties: Assumes that the input file contains a list of
                                     ngrams. Renders each ngram, extracts spacing
-                                    properties and records them in a `.fontinfo` file.
+                                    properties and records them in a ``.fontinfo`` file.
     :param distort_image: Degrade rendered image with noise, blur, invert.
     :param tessdata_directory: Specify location of existing traineddata files,
                                required during feature extraction. If set, it should be
                                the path to the tesseract/tessdata directory. If
-                               unspecified, the `TESSDATA_PREFIX` specified in the
+                               unspecified, the ``TESSDATA_PREFIX`` specified in the
                                current environment will be used.
-    :param exposures: A list of exposure levels to use (e.g. `[-1, 0, 1]`). If
+    :param exposures: A list of exposure levels to use (e.g. ``[-1, 0, 1]``). If
                       unspecified, language-specific ones will be used.
     :param point_size: Size of printed text.
+    :return: The exit code. Always equals 0 at the moment.
     """
     ctx = TrainingArguments()
     ctx.fonts = fonts

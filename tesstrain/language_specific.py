@@ -878,22 +878,26 @@ VERTICAL_FONTS: List[str] = [
 FLAGS_webtext_prefix: str = os.environ.get("FLAGS_webtext_prefix", "")
 
 
-# Set language-specific values for several global variables, including
-#   ${TEXT_CORPUS}
-#      holds the text corpus file for the language, used in phase F
-#   ${FONTS[@]}
-#      holds a sequence of applicable fonts for the language, used in
-#      phase F & I. only set if not already set, i.e. from command line
-#   ${TRAINING_DATA_ARGUMENTS}
-#      non-default arguments to the training_data program used in phase T
-#   ${FILTER_ARGUMENTS}[ -]
-#      character-code-specific filtering to distinguish between scripts
-#      (eg. CJK) used by filter_borbidden_characters in phase F
-#   ${WORDLIST2DAWG_ARGUMENTS}
-#      specify fixed length dawg generation for non-space-delimited lang
 # TODO(dsl): We can refactor these into functions that assign FONTS,
 # TEXT_CORPUS, etc. separately.
 def set_lang_specific_parameters(ctx: TrainingArguments, lang: str) -> TrainingArguments:
+    """
+    Set language-specific values for several global variables, including
+
+    * ``text_corpus``: Holds the text corpus file for the language.
+      Used in phase F.
+    * ``fonts``: Holds a sequence of applicable fonts for the language.
+      Used in phase F & I. Only set if not already set.
+    * ``training_data_arguments``: Character-code-specific filtering to
+      distinguish between scripts (e.g. CJK) used by
+      ``filter_forbidden_characters`` in phase F.
+    * ``wordlist2dawg_arguments``: Specify fixed length DAWG generation
+      for non-space-delimited language.
+
+    :param ctx: The run configuration to update.
+    :param lang: The language code.
+    :return: THe updated run configuration.
+    """
     # The default text location is now given directly from the language code.
     TEXT_CORPUS: str = f"{FLAGS_webtext_prefix}/{lang}.corpus.txt"
     FILTER_ARGUMENTS: List[str] = []

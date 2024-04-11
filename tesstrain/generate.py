@@ -39,6 +39,11 @@ log = logging.getLogger(__name__)
 
 
 def err_exit(msg: str) -> NoReturn:
+    """
+    Exit the application with exit code 1.
+
+    :param msg: The message to log before the exit.
+    """
     log.critical(msg)
     sys.exit(1)
 
@@ -47,6 +52,10 @@ def run_command(cmd: str, *args: Union[str, pathlib.Path], env: Optional[Dict[st
     """
     Helper function to run a command and append its output to a log. Aborts early if
     the program file is not found.
+
+    :param cmd: Binary to use.
+    :param args: Arguments to pass.
+    :param env: Environment variables to use.
     """
     for d in ("", "api/", "training/"):
         testcmd = f"{d}{cmd}"
@@ -84,6 +93,9 @@ def check_file_readable(*filenames: Union[str, pathlib.Path]) -> bool:
     Check if all the given files exist, or exit otherwise.
 
     Used to check required input files and produced output files in each phase.
+
+    :param filenames: The filenames to check.
+    :return: Whether all files exist.
     """
     if isinstance(filenames, (str, pathlib.Path)):
         filenames = [filenames]
@@ -101,6 +113,11 @@ def check_file_readable(*filenames: Union[str, pathlib.Path]) -> bool:
 
 
 def cleanup(ctx: TrainingArguments) -> None:
+    """
+    Move the log file to the output directory and remove the training directory.
+
+    :param ctx: The run configuration.
+    """
     if os.path.exists(ctx.log_file):
         shutil.copy(ctx.log_file, ctx.output_dir)
     shutil.rmtree(ctx.training_dir)
@@ -109,6 +126,8 @@ def cleanup(ctx: TrainingArguments) -> None:
 def initialize_fontconfig(ctx: TrainingArguments) -> None:
     """
     Initialize the font configuration with a unique font cache directory.
+
+    :param ctx: The run configuration.
     """
     sample_path = pathlib.Path(ctx.font_config_cache) / "sample_text.txt"
     pathlib.Path(sample_path).write_text("Text\n")
@@ -125,10 +144,24 @@ def initialize_fontconfig(ctx: TrainingArguments) -> None:
 
 
 def make_fontname(font: str) -> str:
+    """
+    Convert the font name to one without special characters.
+
+    :param font: The name to convert.
+    :return: The converted name.
+    """
     return font.replace(" ", "_").replace(",", "")
 
 
 def make_outbase(ctx: TrainingArguments, fontname: str, exposure: int) -> pathlib.Path:
+    """
+    Generate the base output path.
+
+    :param ctx: The run configuration.
+    :param fontname: The name of the font to train.
+    :param exposure: The current exposure value.
+    :return: The generated path.
+    """
     return pathlib.Path(ctx.training_dir) / f"{ctx.lang_code}.{fontname}.exp{exposure}"
 
 
@@ -140,6 +173,12 @@ def generate_font_image(
 
     Generates the image for a single language/font combination in a way that can be run
     in parallel.
+
+    :param ctx: The run configuration.
+    :param font: The name of the font to use.
+    :param exposure: The exposure value to use.
+    :param char_spacing: The character spacing to use.
+    :return: A corresponding identifier.
     """
     log.info(f"Rendering using {font}")
     fontname = make_fontname(font)
@@ -194,6 +233,9 @@ def generate_font_image(
 def phase_I_generate_image(ctx: TrainingArguments, par_factor: Optional[int] = None) -> None:
     """
     Phase I: Generate (I)mages from training text for each font.
+
+    :param ctx: The run configuration.
+    :param par_factor: Maximun number of workers.
     """
     if not par_factor or par_factor <= 0:
         par_factor = 1
@@ -247,6 +289,8 @@ def phase_I_generate_image(ctx: TrainingArguments, par_factor: Optional[int] = N
 def phase_UP_generate_unicharset(ctx: TrainingArguments) -> None:
     """
     Phase UP: Generate (U)nicharset and (P)roperties file.
+
+    :param ctx: The run configuration.
     """
     log.info("=== Phase UP: Generating unicharset and unichar properties files ===")
 
@@ -281,6 +325,9 @@ def phase_UP_generate_unicharset(ctx: TrainingArguments) -> None:
 def phase_E_extract_features(ctx: TrainingArguments, box_config: List[str], ext: str) -> None:
     """
     Phase E: (E)xtract .tr feature files from .tif/.box files.
+
+    :param ctx: The run configuration.
+    :param box_config: The box configuration values.
     """
     log.info(f"=== Phase E: Generating {ext} files ===")
 
@@ -328,6 +375,9 @@ def phase_E_extract_features(ctx: TrainingArguments, box_config: List[str], ext:
 
 
 def make_lstmdata(ctx: TrainingArguments) -> None:
+    """
+    Construct LSTM training data.
+    """
     log.info("=== Constructing LSTM training data ===")
     lang_prefix = f"{ctx.langdata_dir}/{ctx.lang_code}/{ctx.lang_code}"
     path_output = pathlib.Path(ctx.output_dir)
