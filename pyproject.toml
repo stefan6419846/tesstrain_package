@@ -1,5 +1,73 @@
 [build-system]
 requires = [
-    'setuptools', 'wheel',
-    'tqdm',  # FIXME: Do not require for building the package.
+    "setuptools",
+    "tqdm",  # FIXME: Do not require for building the package.
 ]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tesstrain"
+description = "Training utils for Tesseract"
+dynamic = ["version"]
+license = {text = "Apache-2.0"}
+readme = {file = "README.md", content-type = "text/markdown"}
+authors = [
+    {name = "Tesseract contributors"},
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Topic :: Scientific/Engineering :: Image Recognition",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Typing :: Typed",
+]
+keywords = [
+    "tesseract",
+    "tesseract-ocr",
+    "ocr",
+    "optical character recognition",
+]
+requires-python = ">=3.8, <4"
+dependencies = [
+    "tqdm",
+]
+
+[project.urls]
+Homepage = "https://github.com/stefan6419846/tesstrain_package"
+Documentation = "https://tesstrain.readthedocs.io/"
+Repository = "https://github.com/stefan6419846/tesstrain_package"
+Issues = "https://github.com/stefan6419846/tesstrain_package/issues"
+Changelog = "https://github.com/stefan6419846/tesstrain_package/blob/main/CHANGELOG.md"
+
+[project.optional-dependencies]
+dev = [
+    # Typing.
+    "mypy",
+    "types-tqdm",
+    # Spelling.
+    "codespell",
+]
+docs = [
+    "sphinx",
+    "furo",
+]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.dynamic]
+version = {attr = "tesstrain.__version__"}
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = [
+    "tesstrain",
+    "tesstrain.*"
+]
+namespaces = false
+
+[tool.mypy]
+strict = true
+files = "tesstrain/"
