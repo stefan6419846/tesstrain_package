@@ -1,5 +1,6 @@
 # Development version
 
+* Drop support for Python 3.8.
 * Migrate from `setup.py` to `pyproject.toml`.
 * Add Read the Docs configuration.
 
