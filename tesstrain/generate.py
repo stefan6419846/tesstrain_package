@@ -166,7 +166,7 @@ def make_outbase(ctx: TrainingArguments, fontname: str, exposure: int) -> pathli
 
 
 def generate_font_image(
-        ctx: TrainingArguments, font: str, exposure: int, char_spacing: float
+    ctx: TrainingArguments, font: str, exposure: int, char_spacing: float
 ) -> str:
     """
     Helper function for `phaseI_generate_image`.
@@ -230,16 +230,12 @@ def generate_font_image(
     return f"{font}-{exposure}"
 
 
-def phase_I_generate_image(ctx: TrainingArguments, par_factor: Optional[int] = None) -> None:
+def phase_I_generate_image(ctx: TrainingArguments) -> None:
     """
     Phase I: Generate (I)mages from training text for each font.
 
     :param ctx: The run configuration.
-    :param par_factor: Maximun number of workers.
     """
-    if not par_factor or par_factor <= 0:
-        par_factor = 1
-
     log.info("=== Phase I: Generating training images ===")
     check_file_readable(ctx.training_text)
     char_spacing = 0.0
@@ -266,7 +262,9 @@ def phase_I_generate_image(ctx: TrainingArguments, par_factor: Optional[int] = N
 
         with tqdm(
                 total=len(ctx.fonts)
-        ) as pbar, concurrent.futures.ThreadPoolExecutor(max_workers=par_factor) as executor:
+        ) as pbar, concurrent.futures.ThreadPoolExecutor(
+            max_workers=ctx.num_parallel_jobs
+        ) as executor:
             futures = [
                 executor.submit(generate_font_image, ctx, font, exposure, char_spacing)
                 for font in ctx.fonts
@@ -328,6 +326,7 @@ def phase_E_extract_features(ctx: TrainingArguments, box_config: List[str], ext:
 
     :param ctx: The run configuration.
     :param box_config: The box configuration values.
+    :param ext: something useless
     """
     log.info(f"=== Phase E: Generating {ext} files ===")
 
@@ -347,7 +346,7 @@ def phase_E_extract_features(ctx: TrainingArguments, box_config: List[str], ext:
     log.info(f"Using TESSDATA_PREFIX={tessdata_environ['TESSDATA_PREFIX']}")
 
     with tqdm(total=len(img_files)) as pbar, concurrent.futures.ThreadPoolExecutor(
-            max_workers=2
+        max_workers=ctx.num_parallel_jobs
     ) as executor:
         futures = []
         for img_file in img_files:

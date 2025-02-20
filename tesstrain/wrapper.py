@@ -49,7 +49,7 @@ def run_from_context(ctx: TrainingArguments) -> None:
     ctx = language_specific.set_lang_specific_parameters(ctx, ctx.lang_code)
 
     initialize_fontconfig(ctx)
-    phase_I_generate_image(ctx, par_factor=8)
+    phase_I_generate_image(ctx)
     phase_UP_generate_unicharset(ctx)
 
     if ctx.linedata:
@@ -74,7 +74,8 @@ def run(
         distort_image: bool = False,
         tessdata_directory: Optional[str] = None,
         exposures: Optional[List[int]] = None,
-        point_size: int = 12
+        point_size: int = 12,
+        num_parallel_jobs: int = 8,
 ) -> int:
     """
     Run with the given parameters.
@@ -109,7 +110,8 @@ def run(
                                current environment will be used.
     :param exposures: A list of exposure levels to use (e.g. ``[-1, 0, 1]``). If
                       unspecified, language-specific ones will be used.
-    :param point_size: Size of printed text.
+    :param point_size: Size of printed text (default 12).
+    :param num_parallel_jobs: Number of processes to run in parallel (default 8).
     :return: The exit code. Always equals 0 at the moment.
     """
     ctx = TrainingArguments()
@@ -130,6 +132,7 @@ def run(
     ctx.tessdata_dir = tessdata_directory
     ctx.exposures = exposures
     ctx.ptsize = point_size
+    ctx.num_parallel_jobs = num_parallel_jobs
 
     verify_parameters_and_handle_defaults(ctx)
 
