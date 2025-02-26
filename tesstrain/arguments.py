@@ -53,6 +53,8 @@ class TrainingArguments(argparse.Namespace):
         self.run_shape_clustering: bool = False
         self.extract_font_properties: bool = True
         self.distort_image: bool = False
+        self.ptsize: int = 12
+        self.num_parallel_jobs: int = 8
 
     def __eq__(self, other: Any) -> bool:
         return (
@@ -68,7 +70,9 @@ class TrainingArguments(argparse.Namespace):
             self.linedata == other.linedata and
             self.run_shape_clustering == other.run_shape_clustering and
             self.extract_font_properties == other.extract_font_properties and
-            self.distort_image == other.distort_image
+            self.distort_image == other.distort_image and
+            self.ptsize == other.ptsize and
+            self.num_parallel_jobs == other.num_parallel_jobs
         )
 
 
@@ -178,8 +182,15 @@ def get_argument_parser() -> argparse.ArgumentParser:
         "--ptsize",
         metavar="PT_SIZE",
         type=int,
-        default=12,
         help="Size of printed text.",
+    )
+
+    parser.add_argument(
+        "-j", "--jobs",
+        metavar="NUMBER_OF_JOBS",
+        dest="num_parallel_jobs",
+        type=int,
+        help="Number of processes to run in parallel (applies to some stages only)."
     )
 
     return parser
@@ -232,18 +243,18 @@ def verify_parameters_and_handle_defaults(ctx: TrainingArguments) -> TrainingArg
     # specified in the command-line.
     if not ctx.training_text:
         ctx.training_text = (
-                pathlib.Path(ctx.langdata_dir) / ctx.lang_code / f"{ctx.lang_code}.training_text"
+            pathlib.Path(ctx.langdata_dir) / ctx.lang_code / f"{ctx.lang_code}.training_text"
         )
     if not ctx.wordlist_file:
         ctx.wordlist_file = (
-                pathlib.Path(ctx.langdata_dir) / ctx.lang_code / f"{ctx.lang_code}.wordlist"
+            pathlib.Path(ctx.langdata_dir) / ctx.lang_code / f"{ctx.lang_code}.wordlist"
         )
 
     ctx.word_bigrams_file = (
-            pathlib.Path(ctx.langdata_dir) / ctx.lang_code / f"{ctx.lang_code}.word.bigrams"
+        pathlib.Path(ctx.langdata_dir) / ctx.lang_code / f"{ctx.lang_code}.word.bigrams"
     )
     ctx.numbers_file = (
-            pathlib.Path(ctx.langdata_dir) / ctx.lang_code / f"{ctx.lang_code}.numbers"
+        pathlib.Path(ctx.langdata_dir) / ctx.lang_code / f"{ctx.lang_code}.numbers"
     )
     ctx.punc_file = pathlib.Path(ctx.langdata_dir) / ctx.lang_code / f"{ctx.lang_code}.punc"
     ctx.bigram_freqs_file = pathlib.Path(ctx.training_text).with_suffix(
@@ -256,6 +267,12 @@ def verify_parameters_and_handle_defaults(ctx: TrainingArguments) -> TrainingArg
         ".training_text.train_ngrams"
     )
     ctx.generate_dawgs = 1
+
+    if ctx.num_parallel_jobs < 1:
+        err_exit(
+            f"Option --jobs must be a positive integer value but got {ctx.num_parallel_jobs}"
+        )
+    log.info(f"Execute in parallel: {ctx.num_parallel_jobs} processes")
 
     log.debug(ctx)
     return ctx
