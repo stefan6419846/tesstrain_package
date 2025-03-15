@@ -1,4 +1,4 @@
-# Development version
+# Version 0.2.0 - 2025-03-15
 
 * Drop support for Python 3.8.
 * Migrate from `setup.py` to `pyproject.toml`.
