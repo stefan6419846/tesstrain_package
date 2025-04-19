@@ -36,7 +36,7 @@ VALID_LANGUAGE_CODES: str = (
     "lat_lid lav lit mal mar mkd mlt msa mya nep nld nor ori "
     "pan pol por pus ron rus san sin slk slv snd spa spa_old "
     "sqi srp srp_latn swa swe syr tam tel tgk tgl tha tir tur "
-    "uig ukr urd uzb uzb_cyrl vie yid gle_uncial "
+    "uig ukr urd uzb uzb_cyrl vie yid gle_uncial deu_latf"
 )
 
 # Codes for which we have webtext but no fonts:
@@ -939,7 +939,7 @@ def set_lang_specific_parameters(ctx: TrainingArguments, lang: str) -> TrainingA
         TEXT2IMAGE_EXTRA_ARGS += ["--ligatures"]  # Add ligatures when supported.
         if not FONTS:
             FONTS = EARLY_LATIN_FONTS
-    elif lang == "frk":
+    elif lang in {"frk", "deu_latf"}:
         TEXT_CORPUS = f"{FLAGS_webtext_prefix}/deu.corpus.txt"
         if not FONTS:
             FONTS = FRAKTUR_FONTS
