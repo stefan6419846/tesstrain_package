@@ -4,11 +4,12 @@ Utilities for working with Tesseract >= 4 using artificial training data.
 
 ## About
 
-This repository contains a standalone fork of the official/upstream code at https://github.com/tesseract-ocr/tesstrain/tree/main/src to allow easier packaging for PyPI.
+This repository started as a standalone fork of the official/upstream code at https://github.com/tesseract-ocr/tesstrain/tree/main/src to allow easier packaging for PyPI.
+In the meantime, it has undergone some more changes (especially modernization and code style), which are not available in the original version.
 
 ## Installation
 
-This package requires the Tesseract training tools to be available on your system. Additionally, a supported Python version (at least 3.6) is required for running.
+This package requires the Tesseract training tools to be available on your system. Additionally, a supported Python version is required for running.
 
 You can install this package from PyPI:
 
