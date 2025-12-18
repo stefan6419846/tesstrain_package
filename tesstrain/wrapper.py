@@ -77,7 +77,8 @@ def run(
         distort_image: bool = False,
         tessdata_directory: Optional[str] = None,
         exposures: Optional[List[int]] = None,
-        point_size: int = 12
+        point_size: int = 12,
+        vertical_fonts: Optional[List[str]] = None,
 ) -> int:
     """
     Run with the given parameters.
@@ -113,6 +114,7 @@ def run(
     :param exposures: A list of exposure levels to use (e.g. ``[-1, 0, 1]``). If
                       unspecified, language-specific ones will be used.
     :param point_size: Size of printed text.
+    :param vertical_fonts: A list of vertical font names to train on.
     :return: The exit code. Always equals 0 at the moment.
     """
     ctx = TrainingArguments()
@@ -133,6 +135,7 @@ def run(
     ctx.tessdata_dir = tessdata_directory
     ctx.exposures = exposures
     ctx.ptsize = point_size
+    ctx.vertical_fonts = vertical_fonts
 
     verify_parameters_and_handle_defaults(ctx)
 

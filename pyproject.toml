@@ -41,8 +41,11 @@ Changelog = "https://github.com/stefan6419846/tesstrain_package/blob/main/CHANGE
 
 [project.optional-dependencies]
 dev = [
+    # Tests
+    "requests",
     # Typing.
     "mypy",
+    "types-requests",
     "types-tqdm",
     # Spelling.
     "codespell",
@@ -72,4 +75,4 @@ namespaces = false
 
 [tool.mypy]
 strict = true
-files = "tesstrain/"
+files = "tesstrain/,tests/"
