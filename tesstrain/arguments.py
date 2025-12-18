@@ -20,10 +20,11 @@ import atexit
 import logging
 import os
 import platform
+import shutil
 from argparse import ArgumentParser, Namespace
 from datetime import date
 from pathlib import Path
-from tempfile import TemporaryDirectory, mkdtemp
+from tempfile import mkdtemp
 from typing import Any
 
 from tesstrain.generate import err_exit
@@ -43,8 +44,8 @@ class TrainingArguments(Namespace):
         self.lang_code: str = "eng"
         self.timestamp: str = str(date.today())
 
-        self._font_config_cache: TemporaryDirectory = TemporaryDirectory(prefix="font_tmp")  # type: ignore[type-arg]
-        self.font_config_cache: str = self._font_config_cache.name
+        self.font_config_cache: str = mkdtemp(prefix="font_tmp")
+        atexit.register(shutil.rmtree, self.font_config_cache)
         self.fonts_dir: str = (
             "/Library/Fonts/" if "darwin" in self.uname else "/usr/share/fonts/"
         )
