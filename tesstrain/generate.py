@@ -1,9 +1,11 @@
 # (C) Copyright 2014, Google Inc.
 # (C) Copyright 2018, James R Barlow
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,14 +24,12 @@ from __future__ import annotations
 import concurrent.futures
 import logging
 import os
-import pathlib
 import shutil
 import subprocess
 import sys
 from operator import itemgetter
-from typing import cast, Any, Dict, Generator, List, NoReturn, Optional, TYPE_CHECKING, Union
-
-from tqdm import tqdm
+from pathlib import Path, WindowsPath
+from typing import Any, Generator, NoReturn, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from tesstrain.arguments import TrainingArguments
@@ -48,7 +48,7 @@ def err_exit(msg: str) -> NoReturn:
     sys.exit(1)
 
 
-def run_command(cmd: str, *args: Union[str, pathlib.Path], env: Optional[Dict[str, Any]] = None) -> None:
+def run_command(cmd: str, *args: str | Path, env: dict[str, Any] | None = None) -> None:
     """
     Helper function to run a command and append its output to a log. Aborts early if
     the program file is not found.
@@ -71,7 +71,7 @@ def run_command(cmd: str, *args: Union[str, pathlib.Path], env: Optional[Dict[st
         log.debug(arg)
         # Workaround for https://bugs.python.org/issue33617
         # TypeError: argument of type 'WindowsPath' is not iterable
-        if isinstance(arg, pathlib.WindowsPath):
+        if isinstance(arg, WindowsPath):
             args_list[idx] = str(arg)
 
     proc = subprocess.run(
@@ -88,7 +88,7 @@ def run_command(cmd: str, *args: Union[str, pathlib.Path], env: Optional[Dict[st
         err_exit(f"Program {cmd} failed with return code {proc.returncode}. Abort.")
 
 
-def check_file_readable(*filenames: Union[str, pathlib.Path]) -> bool:
+def check_file_readable(*filenames: str | Path) -> bool:
     """
     Check if all the given files exist, or exit otherwise.
 
@@ -97,17 +97,17 @@ def check_file_readable(*filenames: Union[str, pathlib.Path]) -> bool:
     :param filenames: The filenames to check.
     :return: Whether all files exist.
     """
-    if isinstance(filenames, (str, pathlib.Path)):
+    if isinstance(filenames, (str, Path)):
         filenames = [filenames]
     for filename in filenames:
         try:
-            with pathlib.Path(filename).open():
+            with Path(filename).open():
                 pass
         except FileNotFoundError:
             err_exit(f"Required/expected file '{filename}' does not exist")
         except PermissionError:
             err_exit(f"{filename} is not readable")
-        except IOError as e:
+        except OSError as e:
             err_exit(f"{filename} IO Error: {str(e)}")
     return True
 
@@ -129,8 +129,8 @@ def initialize_fontconfig(ctx: TrainingArguments) -> None:
 
     :param ctx: The run configuration.
     """
-    sample_path = pathlib.Path(ctx.font_config_cache) / "sample_text.txt"
-    pathlib.Path(sample_path).write_text("Text\n")
+    sample_path = Path(ctx.font_config_cache) / "sample_text.txt"
+    Path(sample_path).write_text("Text\n")
     log.info(f"Testing font: {ctx.fonts[0]}")
     run_command(
         "text2image",
@@ -153,7 +153,7 @@ def make_fontname(font: str) -> str:
     return font.replace(" ", "_").replace(",", "")
 
 
-def make_outbase(ctx: TrainingArguments, fontname: str, exposure: int) -> pathlib.Path:
+def make_outbase(ctx: TrainingArguments, fontname: str, exposure: int) -> Path:
     """
     Generate the base output path.
 
@@ -162,7 +162,7 @@ def make_outbase(ctx: TrainingArguments, fontname: str, exposure: int) -> pathli
     :param exposure: The current exposure value.
     :return: The generated path.
     """
-    return pathlib.Path(ctx.training_dir) / f"{ctx.lang_code}.{fontname}.exp{exposure}"
+    return Path(ctx.training_dir) / f"{ctx.lang_code}.{fontname}.exp{exposure}"
 
 
 def generate_font_image(
@@ -187,7 +187,7 @@ def generate_font_image(
     common_args = [
         f"--fontconfig_tmpdir={ctx.font_config_cache}",
         f"--fonts_dir={ctx.fonts_dir}",
-        f"--strip_unrenderable_words",
+        "--strip_unrenderable_words",
         f"--leading={ctx.leading}",
         f"--char_spacing={char_spacing}",
         f"--exposure={exposure}",
@@ -215,28 +215,30 @@ def generate_font_image(
 
     check_file_readable(str(outbase) + ".box", str(outbase) + ".tif")
 
-    if ctx.extract_font_properties and pathlib.Path(ctx.train_ngrams_file).exists():
+    if ctx.extract_font_properties and Path(ctx.train_ngrams_file).exists():
         log.info(f"Extracting font properties of {font}")
         run_command(
             "text2image",
             *common_args,
             f"--font={font}",
-            f"--ligatures=false",
+            "--ligatures=false",
             f"--text={ctx.train_ngrams_file}",
-            f"--only_extract_font_properties",
-            f"--ptsize=32",
+            "--only_extract_font_properties",
+            "--ptsize=32",
         )
         check_file_readable(str(outbase) + ".fontinfo")
     return f"{font}-{exposure}"
 
 
-def phase_I_generate_image(ctx: TrainingArguments, par_factor: Optional[int] = None) -> None:
+def phase_I_generate_image(ctx: TrainingArguments, par_factor: int | None = None) -> None:  # noqa: N802
     """
     Phase I: Generate (I)mages from training text for each font.
 
     :param ctx: The run configuration.
-    :param par_factor: Maximun number of workers.
+    :param par_factor: Maximum number of workers.
     """
+    from tqdm import tqdm
+
     if not par_factor or par_factor <= 0:
         par_factor = 1
 
@@ -245,11 +247,11 @@ def phase_I_generate_image(ctx: TrainingArguments, par_factor: Optional[int] = N
     char_spacing = 0.0
 
     for exposure in ctx.exposures:
-        if ctx.extract_font_properties and pathlib.Path(ctx.bigram_freqs_file).exists():
+        if ctx.extract_font_properties and Path(ctx.bigram_freqs_file).exists():
             # Parse .bigram_freqs file and compose a .train_ngrams file with text
             # for tesseract to recognize during training. Take only the ngrams whose
             # combined weight accounts for 95% of all the bigrams in the language.
-            lines = pathlib.Path(ctx.bigram_freqs_file).read_text(encoding="utf-8").split("\n")
+            lines = Path(ctx.bigram_freqs_file).read_text(encoding="utf-8").split("\n")
             records = [line.split() for line in lines]
             p = 0.99
             ngram_frac = p * sum(int(rec[1]) for rec in records if len(rec) >= 2)
@@ -286,7 +288,7 @@ def phase_I_generate_image(ctx: TrainingArguments, par_factor: Optional[int] = N
             check_file_readable(str(outbase) + ".box", str(outbase) + ".tif")
 
 
-def phase_UP_generate_unicharset(ctx: TrainingArguments) -> None:
+def phase_UP_generate_unicharset(ctx: TrainingArguments) -> None:  # noqa: N802
     """
     Phase UP: Generate (U)nicharset and (P)roperties file.
 
@@ -294,9 +296,9 @@ def phase_UP_generate_unicharset(ctx: TrainingArguments) -> None:
     """
     log.info("=== Phase UP: Generating unicharset and unichar properties files ===")
 
-    box_files = pathlib.Path(ctx.training_dir).glob("*.box")
+    box_files = Path(ctx.training_dir).glob("*.box")
 
-    ctx.unicharset_file = pathlib.Path(ctx.training_dir) / f"{ctx.lang_code}.unicharset"
+    ctx.unicharset_file = Path(ctx.training_dir) / f"{ctx.lang_code}.unicharset"
 
     run_command(
         "unicharset_extractor",
@@ -308,7 +310,7 @@ def phase_UP_generate_unicharset(ctx: TrainingArguments) -> None:
     )
     check_file_readable(ctx.unicharset_file)
 
-    ctx.xheights_file = pathlib.Path(ctx.training_dir) / f"{ctx.lang_code}.xheights"
+    ctx.xheights_file = Path(ctx.training_dir) / f"{ctx.lang_code}.xheights"
     run_command(
         "set_unicharset_properties",
         "-U",
@@ -322,21 +324,23 @@ def phase_UP_generate_unicharset(ctx: TrainingArguments) -> None:
     check_file_readable(ctx.xheights_file)
 
 
-def phase_E_extract_features(ctx: TrainingArguments, box_config: List[str], ext: str) -> None:
+def phase_E_extract_features(ctx: TrainingArguments, box_config: list[str], ext: str) -> None:  # noqa: N802
     """
     Phase E: (E)xtract .tr feature files from .tif/.box files.
 
     :param ctx: The run configuration.
     :param box_config: The box configuration values.
     """
+    from tqdm import tqdm
+
     log.info(f"=== Phase E: Generating {ext} files ===")
 
-    img_files = list(pathlib.Path(ctx.training_dir).glob("*.exp*.tif"))
+    img_files = list(Path(ctx.training_dir).glob("*.exp*.tif"))
     log.debug(img_files)
 
     # Use any available language-specific configs.
-    config: List[str] = []
-    testconfig = pathlib.Path(ctx.langdata_dir) / ctx.lang_code / f"{ctx.lang_code}.config"
+    config: list[str] = []
+    testconfig = Path(ctx.langdata_dir) / ctx.lang_code / f"{ctx.lang_code}.config"
     if testconfig.exists():
         config = [str(testconfig)]
         log.info(f"Using {ctx.lang_code}.config")
@@ -355,7 +359,7 @@ def phase_E_extract_features(ctx: TrainingArguments, box_config: List[str], ext:
                 run_command,
                 "tesseract",
                 img_file,
-                pathlib.Path(img_file).with_suffix(""),
+                Path(img_file).with_suffix(""),
                 *box_config,
                 *config,
                 env=tessdata_environ,
@@ -371,7 +375,7 @@ def phase_E_extract_features(ctx: TrainingArguments, box_config: List[str], ext:
                 pbar.update(1)
     # Check that all the output files were produced.
     for img_file in img_files:
-        check_file_readable(pathlib.Path(img_file.with_suffix("." + ext)))
+        check_file_readable(Path(img_file.with_suffix("." + ext)))
 
 
 def make_lstmdata(ctx: TrainingArguments) -> None:
@@ -380,7 +384,7 @@ def make_lstmdata(ctx: TrainingArguments) -> None:
     """
     log.info("=== Constructing LSTM training data ===")
     lang_prefix = f"{ctx.langdata_dir}/{ctx.lang_code}/{ctx.lang_code}"
-    path_output = pathlib.Path(ctx.output_dir)
+    path_output = Path(ctx.output_dir)
     if not path_output.is_dir():
         log.info(f"Creating new directory {ctx.output_dir}")
         path_output.mkdir(exist_ok=True, parents=True)
@@ -411,8 +415,8 @@ def make_lstmdata(ctx: TrainingArguments) -> None:
         *args,
     )
 
-    def get_file_list() -> Generator[pathlib.Path, None, None]:
-        training_path = pathlib.Path(ctx.training_dir)
+    def get_file_list() -> Generator[Path]:
+        training_path = Path(ctx.training_dir)
         if ctx.save_box_tiff:
             log.info("=== Saving box/tiff pairs for training data ===")
             yield from training_path.glob(f"{ctx.lang_code}*.box")

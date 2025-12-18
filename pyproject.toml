@@ -1,7 +1,6 @@
 [build-system]
 requires = [
     "setuptools",
-    "tqdm",  # FIXME: Do not require for building the package.
 ]
 build-backend = "setuptools.build_meta"
 
@@ -9,7 +8,7 @@ build-backend = "setuptools.build_meta"
 name = "tesstrain"
 description = "Training utils for Tesseract"
 dynamic = ["version"]
-license = {text = "Apache-2.0"}
+license = "Apache-2.0"
 readme = {file = "README.md", content-type = "text/markdown"}
 authors = [
     {name = "Tesseract contributors"},
@@ -18,7 +17,6 @@ classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
     "Topic :: Scientific/Engineering :: Image Recognition",
-    "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
     "Typing :: Typed",
@@ -29,7 +27,7 @@ keywords = [
     "ocr",
     "optical character recognition",
 ]
-requires-python = ">=3.9, <4"
+requires-python = ">=3.10, <4"
 dependencies = [
     "tqdm",
 ]
@@ -48,6 +46,10 @@ dev = [
     "types-tqdm",
     # Spelling.
     "codespell",
+    # Linting.
+    "flake8",
+    "flake8-bugbear",
+    "pep8-naming",
 ]
 docs = [
     "sphinx",

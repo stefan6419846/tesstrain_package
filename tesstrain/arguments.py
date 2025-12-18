@@ -1,9 +1,11 @@
 # (C) Copyright 2014, Google Inc.
 # (C) Copyright 2018, James R Barlow
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,28 +16,29 @@
 Argument handling utilities.
 """
 
-import argparse
 import atexit
 import logging
 import os
-import pathlib
 import platform
+from argparse import ArgumentParser, Namespace
 from datetime import date
+from pathlib import Path
 from tempfile import TemporaryDirectory, mkdtemp
 from typing import Any
 
 from tesstrain.generate import err_exit
 
 log = logging.getLogger(__name__)
+del logging
 
 
-class TrainingArguments(argparse.Namespace):
+class TrainingArguments(Namespace):
     """
     Container for holding the training arguments.
     """
 
     def __init__(self) -> None:
-        super(TrainingArguments, self).__init__()
+        super().__init__()
         self.uname: str = platform.uname().system.lower()
         self.lang_code: str = "eng"
         self.timestamp: str = str(date.today())
@@ -56,7 +59,7 @@ class TrainingArguments(argparse.Namespace):
 
     def __eq__(self, other: Any) -> bool:
         return (
-            argparse.Namespace.__eq__(self, other) and
+            Namespace.__eq__(self, other) and
             self.uname == other.uname and
             self.lang_code == other.lang_code and
             self.timestamp == other.timestamp and
@@ -72,13 +75,13 @@ class TrainingArguments(argparse.Namespace):
         )
 
 
-def get_argument_parser() -> argparse.ArgumentParser:
+def get_argument_parser() -> ArgumentParser:
     """
     Get the ArgumentParser for the CLI.
 
     :return: The corresponding argument parser.
     """
-    parser = argparse.ArgumentParser(
+    parser = ArgumentParser(
         prog='tesstrain',
         epilog="""
         The font names specified in --fontlist need to be recognizable by Pango using
@@ -217,13 +220,13 @@ def verify_parameters_and_handle_defaults(ctx: TrainingArguments) -> TrainingArg
     else:
         ctx.training_dir = mkdtemp(prefix=f"{ctx.lang_code}-{ctx.timestamp}", dir=ctx.tmp_dir)
     # Location of log file for the whole run.
-    ctx.log_file = pathlib.Path(ctx.training_dir) / "tesstrain.log"
+    ctx.log_file = Path(ctx.training_dir) / "tesstrain.log"
     log.info(f"Log file location: {ctx.log_file}")
 
     def show_tmpdir_location(training_dir: str) -> None:
         # On successful exit we will delete this first; on failure we want to let the user
         # know where the log is
-        if pathlib.Path(training_dir).exists():
+        if Path(training_dir).exists():
             print(f"Temporary files retained at: {training_dir}")
 
     atexit.register(show_tmpdir_location, ctx.training_dir)
@@ -232,27 +235,27 @@ def verify_parameters_and_handle_defaults(ctx: TrainingArguments) -> TrainingArg
     # specified in the command-line.
     if not ctx.training_text:
         ctx.training_text = (
-                pathlib.Path(ctx.langdata_dir) / ctx.lang_code / f"{ctx.lang_code}.training_text"
+            Path(ctx.langdata_dir) / ctx.lang_code / f"{ctx.lang_code}.training_text"
         )
     if not ctx.wordlist_file:
         ctx.wordlist_file = (
-                pathlib.Path(ctx.langdata_dir) / ctx.lang_code / f"{ctx.lang_code}.wordlist"
+            Path(ctx.langdata_dir) / ctx.lang_code / f"{ctx.lang_code}.wordlist"
         )
 
     ctx.word_bigrams_file = (
-            pathlib.Path(ctx.langdata_dir) / ctx.lang_code / f"{ctx.lang_code}.word.bigrams"
+        Path(ctx.langdata_dir) / ctx.lang_code / f"{ctx.lang_code}.word.bigrams"
     )
     ctx.numbers_file = (
-            pathlib.Path(ctx.langdata_dir) / ctx.lang_code / f"{ctx.lang_code}.numbers"
+        Path(ctx.langdata_dir) / ctx.lang_code / f"{ctx.lang_code}.numbers"
     )
-    ctx.punc_file = pathlib.Path(ctx.langdata_dir) / ctx.lang_code / f"{ctx.lang_code}.punc"
-    ctx.bigram_freqs_file = pathlib.Path(ctx.training_text).with_suffix(
+    ctx.punc_file = Path(ctx.langdata_dir) / ctx.lang_code / f"{ctx.lang_code}.punc"
+    ctx.bigram_freqs_file = Path(ctx.training_text).with_suffix(
         ".training_text.bigram_freqs"
     )
-    ctx.unigram_freqs_file = pathlib.Path(ctx.training_text).with_suffix(
+    ctx.unigram_freqs_file = Path(ctx.training_text).with_suffix(
         ".training_text.unigram_freqs"
     )
-    ctx.train_ngrams_file = pathlib.Path(ctx.training_text).with_suffix(
+    ctx.train_ngrams_file = Path(ctx.training_text).with_suffix(
         ".training_text.train_ngrams"
     )
     ctx.generate_dawgs = 1
